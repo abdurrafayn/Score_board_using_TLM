@@ -30,56 +30,56 @@ class router_scoreboard extends uvm_scoreboard;
             channel_1_packet = new("channel_1_packet", this);
             channel_2_packet = new("channel_2_packet", this);
 
-            received_packets    = 0; 
-            wrong_packets       = 0;
-            matched_packets     = 0;
+            // received_packets    = 0; 
+            // wrong_packets       = 0;
+            // matched_packets     = 0;
             
         endfunction
 
             //comparing function
-    function bit comp_equal (input yapp_packet yp, input channel_packet cp);
-      // returns first mismatch only
-      if (yp.addr != cp.addr) begin
-        `uvm_error("PKT_COMPARE",$sformatf("Address mismatch YAPP %0d Chan %0d",yp.addr,cp.addr))
-        return(0);
-      end
-      if (yp.length != cp.length) begin
-        `uvm_error("PKT_COMPARE",$sformatf("Length mismatch YAPP %0d Chan %0d",yp.length,cp.length))
-        return(0);
-      end
-      foreach (yp.payload [i])
-        if (yp.payload[i] != cp.payload[i]) begin
-          `uvm_error("PKT_COMPARE",$sformatf("Payload[%0d] mismatch YAPP %0d Chan %0d",i,yp.payload[i],cp.payload[i]))
-          return(0);
-        end
-      if (yp.parity != cp.parity) begin
-        `uvm_error("PKT_COMPARE",$sformatf("Parity mismatch YAPP %0d Chan %0d",yp.parity,cp.parity))
-        return(0);
-      end
-      return(1);
-    endfunction
-
-
-    // function bit custom_comp (input yapp_packet yp, input channel_packet cp, uvm_comparer compare = null)
-    //     if(comparer == null)
-    //     comparer = new();
-
-    //     custom_comp = comparer.compare_field("addr", yp.addr,cp.addr,2);
-    //     custom_comp &= comparer.compare_field("length", yp.length, cp.length, 6);
-
-    //     foreach (yp.payload[i]) 
-    //         begin
-    //             custom_comp &= comparer.compare_field("payload", yp.payload[i], cp.payload[i], 8);
-    //         end
-    //     custom_comp &= comparer.compare_field("parity", yp.parity, cp.parity, 1);
-    //     return custom_comp;
+    // function bit comp_equal (input yapp_packet yp, input channel_packet cp);
+    //   // returns first mismatch only
+    //   if (yp.addr != cp.addr) begin
+    //     `uvm_error("PKT_COMPARE",$sformatf("Address mismatch YAPP %0d Chan %0d",yp.addr,cp.addr))
+    //     return(0);
+    //   end
+    //   if (yp.length != cp.length) begin
+    //     `uvm_error("PKT_COMPARE",$sformatf("Length mismatch YAPP %0d Chan %0d",yp.length,cp.length))
+    //     return(0);
+    //   end
+    //   foreach (yp.payload [i])
+    //     if (yp.payload[i] != cp.payload[i]) begin
+    //       `uvm_error("PKT_COMPARE",$sformatf("Payload[%0d] mismatch YAPP %0d Chan %0d",i,yp.payload[i],cp.payload[i]))
+    //       return(0);
+    //     end
+    //   if (yp.parity != cp.parity) begin
+    //     `uvm_error("PKT_COMPARE",$sformatf("Parity mismatch YAPP %0d Chan %0d",yp.parity,cp.parity))
+    //     return(0);
+    //   end
+    //   return(1);
     // endfunction
+
+
+    function bit custom_comp (input yapp_packet yp, input channel_packet cp, uvm_comparer comparer = null);
+        if(comparer == null)
+        comparer = new();
+
+        custom_comp = comparer.compare_field("addr", yp.addr,cp.addr,2);
+        custom_comp &= comparer.compare_field("length", yp.length, cp.length, 6);
+
+        foreach (yp.payload[i]) 
+            begin
+                custom_comp &= comparer.compare_field("payload", yp.payload[i], cp.payload[i], 8);
+            end
+        custom_comp &= comparer.compare_field("parity", yp.parity, cp.parity, 1);
+        return custom_comp;
+    endfunction
 
 
     function void write_yapp_router(input yapp_packet pkt);
         yapp_packet p_copy;
         $cast(p_copy,pkt.clone());
-        received_packets++;
+        //received_packets++;
 
         case(p_copy.addr)
         0: q0.push_back(p_copy);
@@ -97,15 +97,15 @@ class router_scoreboard extends uvm_scoreboard;
         if(cp.addr == 0) begin
            yp = q0.pop_front();
             received_packets++;
+            if (custom_comp(yp, cp) == 1)
+                matched_packets++;
+            else begin
+                `uvm_error("CHAN0", "No packet to compare in queue 0")
+                wrong_packets++;
+            end
         end else
             $display("Packet expected at channel 0 but received at = %0d", yp.addr);
         
-        if (comp_equal(yp, cp) == 1)
-            matched_packets++;
-        else begin
-            `uvm_error("CHAN0", "No packet to compare in queue 0")
-            wrong_packets++;
-        end
     endfunction
 
     function void write_chan1(input channel_packet cp);
@@ -113,15 +113,15 @@ class router_scoreboard extends uvm_scoreboard;
         if(cp.addr == 1) begin
            yp = q1.pop_front();
             received_packets++;
+            if (custom_comp(yp, cp))
+                matched_packets++;
+            else begin
+                `uvm_error("CHAN1", "No packet to compare in queue 1")
+                wrong_packets++;
+            end
         end else
             $display("Packet expected at channel 1 but received at = %0d", yp.addr);
         
-            if (comp_equal(yp, cp))
-            matched_packets++;
-        else begin
-            `uvm_error("CHAN1", "No packet to compare in queue 1")
-            wrong_packets++;
-        end
     endfunction
 
     function void write_chan2(input channel_packet cp);
@@ -129,16 +129,16 @@ class router_scoreboard extends uvm_scoreboard;
         if(cp.addr == 2) begin
            yp = q2.pop_front();
             received_packets++;
+            if (custom_comp(yp, cp))
+                matched_packets++;
+            else begin
+                `uvm_error("CHAN2", "No packet to compare in queue 2")
+                wrong_packets++;
+            end
         end
         else
             $display("Packet expected at channel 2 but received at = 0d", yp.addr);
         
-            if (comp_equal(yp, cp))
-            matched_packets++;
-        else begin
-            `uvm_error("CHAN2", "No packet to compare in queue 2")
-            wrong_packets++;
-        end
     endfunction
 
     function void report_phase(uvm_phase phase);

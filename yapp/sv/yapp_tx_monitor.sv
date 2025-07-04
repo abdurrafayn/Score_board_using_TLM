@@ -7,7 +7,7 @@ virtual yapp_if vif;
 
 function new(string name = "yapp_tx_monitor", uvm_component parent = null);
     super.new(name,parent);
-        yapp_in = new("yapp_in", this); //constructed the analysis port in monitor constructor
+        yapp_in = new("yapp_in", this); //constructed the analysis port in monitor constructor.
 
 endfunction
 

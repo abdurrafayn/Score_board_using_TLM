@@ -25,4 +25,4 @@ hw_top_dut.sv
 tb_top.sv
 
 +UVM_TESTNAME=new_mctest
-+UVM_VERBOSITY=UVM_FULL
++UVM_VERBOSITY=UVM_LOW

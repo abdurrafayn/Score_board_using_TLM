@@ -54,14 +54,15 @@ class router_tb extends uvm_env;
     if (environment.agent.monitor == null)
     `uvm_fatal("NULL_MON", "environment.agent.monitor is NULL!")
     
-    // environment.agent.monitor.yapp_in.connect(scoreboard.router_packet_in);
+    environment.agent.monitor.yapp_in.connect(scoreboard.router_packet_in);
     // `uvm_info("connect phase","Hello world", UVM_MEDIUM)
+
     channel_0.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_0_packet);
     channel_1.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_1_packet);
     channel_2.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_2_packet);
 
     `uvm_info("CONNECT_DBG", $sformatf("environment.agent: %p", environment.agent), UVM_MEDIUM)
-`uvm_info("CONNECT_DBG", $sformatf("environment.agent.monitor: %p", environment.agent.monitor), UVM_MEDIUM)
+    `uvm_info("CONNECT_DBG", $sformatf("environment.agent.monitor: %p", environment.agent.monitor), UVM_MEDIUM)
 
 
     endfunction
