@@ -25,24 +25,14 @@ class router_reference extends uvm_component;
            
         endfunction
 
-        function void write_yapp_ref(input yapp_packet pkt);
+        function void write_yapp_reference(input yapp_packet pkt);
 
             yapp_packet p_copy;
         $cast(p_copy,pkt.clone());
         if((p_copy.length <= max_packet_size) && (p_copy.addr < 3) && (router_en[0] == 1))
-
-
-        //received_packets++;
-
-        // case(p_copy.addr)
-        // 0: q0.push_back(p_copy);
-        // 1: q1.push_back(p_copy);
-        // 2: q2.push_back(p_copy);
-        // default:
-        //     `uvm_warning("YAPP_SB", $sformatf("packet with illegal address %0d recevied", p_copy.addr))
-        // endcase
-
-
+            yapp_to_ref.write(p_copy);
+            else 
+                `uvm_info(get_type_name(), $sformatf("packet with illegal address %0d recevied", p_copy.addr))
         endfunction
 
 endclass

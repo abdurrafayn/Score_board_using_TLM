@@ -18,7 +18,9 @@ class router_tb extends uvm_env;
     clock_and_reset_env clock_and_reset;
     router_mcsequencer mcseqr;
 
-    router_scoreboard scoreboard;
+    //router_scoreboard scoreboard;
+
+    router_module_env yapp_module_env;
 
     function void build_phase(uvm_phase phase);
     
@@ -43,26 +45,23 @@ class router_tb extends uvm_env;
         hbus = hbus_env::type_id::create("hbus", this);
         clock_and_reset = clock_and_reset_env::type_id::create("clock_and_reset", this);
         mcseqr= router_mcsequencer::type_id::create("mcseqr", this);
-        scoreboard = router_scoreboard::type_id::create("scoreboard",this);
-
+        //scoreboard = router_scoreboard::type_id::create("scoreboard",this);
+        yapp_module_env = router_module_env::type_id::create("yapp_module_env", this)
     endfunction: build_phase
 
     function void connect_phase(uvm_phase phase);
     mcseqr.hbus = hbus.masters[0].sequencer;
     mcseqr.yapp = environment.agent.sequencer;
     
-    if (environment.agent.monitor == null)
-    `uvm_fatal("NULL_MON", "environment.agent.monitor is NULL!")
     
     environment.agent.monitor.yapp_in.connect(scoreboard.router_packet_in);
-    // `uvm_info("connect phase","Hello world", UVM_MEDIUM)
+
 
     channel_0.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_0_packet);
     channel_1.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_1_packet);
     channel_2.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_2_packet);
+    hbus.monitor.item_collected_port.connect()
 
-    `uvm_info("CONNECT_DBG", $sformatf("environment.agent: %p", environment.agent), UVM_MEDIUM)
-    `uvm_info("CONNECT_DBG", $sformatf("environment.agent.monitor: %p", environment.agent.monitor), UVM_MEDIUM)
 
 
     endfunction
