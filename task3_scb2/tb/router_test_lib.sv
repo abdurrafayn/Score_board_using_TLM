@@ -51,21 +51,21 @@ endclass //className extends superClass
 
 // endclass //className extends superClass
 
-// class short_packet_test extends base_test;
+class short_packet_test extends base_test;
 
-//     `uvm_component_utils(short_packet_test)
+    `uvm_component_utils(short_packet_test)
     
-//     function new(string name="short_packet_test", uvm_component parent);
-//         super.new(name, parent);
-//     endfunction 
+    function new(string name="short_packet_test", uvm_component parent);
+        super.new(name, parent);
+    endfunction 
 
 
-//     function void build_phase(uvm_phase phase);
-//         set_type_override_by_type(yapp_packet::get_type(), short_yapp_packet::get_type());
-//         super.build_phase(phase);
-//     endfunction
+    function void build_phase(uvm_phase phase);
+        set_type_override_by_type(yapp_packet::get_type(), short_yapp_packet::get_type());
+        super.build_phase(phase);
+    endfunction
 
-// endclass
+endclass
 
 // class set_config_test extends base_test;
 

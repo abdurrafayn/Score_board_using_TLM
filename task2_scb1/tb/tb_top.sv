@@ -25,7 +25,7 @@ module tb_top;
         hbus_vif_config::set(null,"uvm_test_top.inst_tb.hbus.*","vif",hw_top.hbus_vif);
 
 
-        run_test();
+        run_test("new_mctest");
     end
 
 

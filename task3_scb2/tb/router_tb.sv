@@ -45,22 +45,19 @@ class router_tb extends uvm_env;
         hbus = hbus_env::type_id::create("hbus", this);
         clock_and_reset = clock_and_reset_env::type_id::create("clock_and_reset", this);
         mcseqr= router_mcsequencer::type_id::create("mcseqr", this);
-        //scoreboard = router_scoreboard::type_id::create("scoreboard",this);
+        //scoreboard = router_scoreboard::type_id::create("scoreboard",this);.
         yapp_module_env = router_module_env::type_id::create("yapp_module_env", this)
     endfunction: build_phase
 
     function void connect_phase(uvm_phase phase);
     mcseqr.hbus = hbus.masters[0].sequencer;
-    mcseqr.yapp = environment.agent.sequencer;
-    
-    
-    environment.agent.monitor.yapp_in.connect(scoreboard.router_packet_in);
+    mcseqr.yapp = environment.agent.sequencer; 
+    environment.agent.monitor.yapp_in.connect(yapp_module_env.yapp_router_scb.router_packet_in);
 
-
-    channel_0.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_0_packet);
-    channel_1.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_1_packet);
-    channel_2.rx_agent.monitor.item_collected_port.connect(scoreboard.channel_2_packet);
-    hbus.monitor.item_collected_port.connect()
+    channel_0.rx_agent.monitor.item_collected_port.connect(yapp_module_env.yapp_router_scb.channel_0_packet);
+    channel_1.rx_agent.monitor.item_collected_port.connect(yapp_module_env.yapp_router_scb.channel_1_packet);
+    channel_2.rx_agent.monitor.item_collected_port.connect(yapp_module_env.yapp_router_scb.channel_2_packet);
+    hbus.monitor.item_collected_port.connect(yapp_module_env.yapp_router_ref.hbus_packet_in);
 
 
 

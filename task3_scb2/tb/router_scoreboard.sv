@@ -97,7 +97,7 @@ class router_scoreboard extends uvm_scoreboard;
         if(cp.addr == 0) begin
            yp = q0.pop_front();
             received_packets++;
-            if (custom_comp(yp, cp) == 1)
+            if (custom_comp(yp, cp))
                 matched_packets++;
             else begin
                 `uvm_error("CHAN0", "No packet to compare in queue 0")
