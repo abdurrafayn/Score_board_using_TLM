@@ -5,6 +5,7 @@
 -incdir ../../hbus/sv
 -incdir ../../clock_and_reset/sv
 -incdir ./tb
+-incdir ../sv
 -incdir ../../router_rtl
 
 ../../yapp/sv/yapp_pkg.sv

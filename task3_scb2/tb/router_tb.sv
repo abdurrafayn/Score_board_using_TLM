@@ -1,9 +1,6 @@
 class router_tb extends uvm_env;
     
 `uvm_component_utils(router_tb)
-
-    
-
     function new(string name ="router_tb", uvm_component parent);
         super.new(name, parent);
     endfunction: new
@@ -46,7 +43,7 @@ class router_tb extends uvm_env;
         clock_and_reset = clock_and_reset_env::type_id::create("clock_and_reset", this);
         mcseqr= router_mcsequencer::type_id::create("mcseqr", this);
         //scoreboard = router_scoreboard::type_id::create("scoreboard",this);.
-        yapp_module_env = router_module_env::type_id::create("yapp_module_env", this)
+        yapp_module_env = router_module_env::type_id::create("yapp_module_env", this);
     endfunction: build_phase
 
     function void connect_phase(uvm_phase phase);
@@ -57,10 +54,7 @@ class router_tb extends uvm_env;
     channel_0.rx_agent.monitor.item_collected_port.connect(yapp_module_env.yapp_router_scb.channel_0_packet);
     channel_1.rx_agent.monitor.item_collected_port.connect(yapp_module_env.yapp_router_scb.channel_1_packet);
     channel_2.rx_agent.monitor.item_collected_port.connect(yapp_module_env.yapp_router_scb.channel_2_packet);
-    hbus.monitor.item_collected_port.connect(yapp_module_env.yapp_router_ref.hbus_packet_in);
-
-
-
+    hbus.bus_monitor.item_collected_port.connect(yapp_module_env.yapp_router_ref.hbus_packet_in);
     endfunction
 
 endclass: router_tb

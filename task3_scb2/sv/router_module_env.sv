@@ -1,4 +1,4 @@
-class router_module_env extends uvm_environment;
+class router_module_env extends uvm_env;
 
         `uvm_component_utils(router_module_env)
 

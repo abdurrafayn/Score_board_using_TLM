@@ -8,12 +8,20 @@ module tb_top;
     import channel_pkg::*;
     import clock_and_reset_pkg::*;
     import hbus_pkg::*;
+    `include "router_reference.sv"
+    
     `include "router_scoreboard.sv"
+    
+    `include "router_module_env.sv"
+    
     `include "router_mcsequencer.sv"
+    
     `include "router_mcseqs_lib.sv"
 
     `include "router_tb.sv"  
+    
     `include "router_test_lib.sv"  
+    
     initial begin
         yapp_vif_config::set(null,"uvm_test_top.inst_tb.environment.agent.*","vif",hw_top.in0);
 
@@ -25,7 +33,7 @@ module tb_top;
         hbus_vif_config::set(null,"uvm_test_top.inst_tb.hbus.*","vif",hw_top.hbus_vif);
 
 
-        run_test();
+        run_test("new_mctest");
     end
 
 
